@@ -25,14 +25,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto addNewUser(User user) {
+    public UserDto addNewUser(UserDto userDto) {
+        User user = UserMapper.toEntity(userDto);
         user.setUser_id(nextId++);
         users.put(user.getUser_id(), user);
         return UserMapper.toDto(user);
     }
 
     @Override
-    public UserDto updateUser(User user) {
+    public UserDto updateUser(UserDto userDto) {
+        User user = UserMapper.toEntity(userDto);
         users.put(user.getUser_id(), user);
         return UserMapper.toDto(user);
     }
