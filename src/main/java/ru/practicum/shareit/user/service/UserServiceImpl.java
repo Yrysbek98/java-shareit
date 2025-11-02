@@ -10,12 +10,14 @@ import ru.practicum.shareit.user.model.User;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private HashMap<Long, User> users = new HashMap<>();
     private Long nextId = 1L;
+    private final AtomicLong idGenerator = new AtomicLong(0);
 
     @Override
     public UserDto getUserById(Long id) {
@@ -31,18 +33,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto addNewUser(UserDto userDto) {
-        if(userDto == null){
+      if(userDto == null){
             return new UserDto();
-        }
-        if (userDto.getUser_name() == null){
-            throw new UserValidationException("Имя не может быть пустым");
-        }
-        if (userDto.getUser_email() == null){
-            throw new UserValidationException("Email не может быть пустым");
         }
         User user = UserMapper.toEntity(userDto);
         if (users.values().stream().anyMatch(u -> u.getUser_email().equalsIgnoreCase(user.getUser_email()))) {
             throw new UserConflictException("Такой email уже существует");
+        }
+        if (userDto.getUser_email() == null){
+            throw new UserValidationException("Email не может быть пустым");
         }
         user.setUser_id(nextId++);
         users.put(user.getUser_id(), user);
