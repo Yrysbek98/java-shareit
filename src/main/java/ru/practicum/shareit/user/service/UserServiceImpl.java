@@ -1,7 +1,10 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,11 +12,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private HashMap<Integer, User> users = new HashMap<>();
-    private int nextId = 1;
+    private HashMap<Long, User> users = new HashMap<>();
+    private Long nextId = 1L;
 
     @Override
-    public UserDto getUserById(int id) {
+    public UserDto getUserById(Long id) {
         return UserMapper.toDto(users.get(id));
     }
 
@@ -40,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUserById(int id) {
+    public void deleteUserById(Long id) {
         users.remove(id);
     }
 }
