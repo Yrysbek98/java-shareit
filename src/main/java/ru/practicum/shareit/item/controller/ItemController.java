@@ -1,7 +1,13 @@
 package ru.practicum.shareit.item.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.AbstractDtoException;
+import ru.practicum.shareit.exception.ErrorResponse;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.exception.ItemNotFoundException;
+import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
@@ -11,8 +17,9 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/items")
+@RequiredArgsConstructor
 public class ItemController {
-    private ItemService ItemService;
+    private final  ItemService ItemService;
     @GetMapping("/{id}")
     public ItemDto getItemById(@PathVariable Long id){
         return ItemService.getItemById(id);
@@ -38,4 +45,21 @@ public class ItemController {
         ItemService.deleteItemById(id);
     }
 
+    @ExceptionHandler(ItemValidationException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(ItemValidationException ex) {
+        ErrorResponse errorResponse = ex.toResponse();
+        return new ResponseEntity<>(errorResponse, errorResponse.httpStatusCode());
+    }
+
+    @ExceptionHandler(ItemNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(ItemNotFoundException ex) {
+        ErrorResponse errorResponse = ex.toResponse();
+        return new ResponseEntity<>(errorResponse, errorResponse.httpStatusCode());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleServerExceptions(AbstractDtoException exception) {
+        ErrorResponse errorResponse = exception.toResponse();
+        return new ResponseEntity<>(errorResponse, errorResponse.httpStatusCode());
+    }
 }
