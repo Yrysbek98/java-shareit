@@ -3,6 +3,8 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.exception.UserConflictException;
+import ru.practicum.shareit.user.exception.UserValidationException;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
@@ -29,7 +31,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto addNewUser(UserDto userDto) {
+        if(userDto == null){
+            return new UserDto();
+        }
+        if (userDto.getUser_name() == null){
+            throw new UserValidationException("Имя не может быть пустым");
+        }
+        if (userDto.getUser_email() == null){
+            throw new UserValidationException("Email не может быть пустым");
+        }
         User user = UserMapper.toEntity(userDto);
+        if (users.values().stream().anyMatch(u -> u.getUser_email().equalsIgnoreCase(user.getUser_email()))) {
+            throw new UserConflictException("Такой email уже существует");
+        }
         user.setUser_id(nextId++);
         users.put(user.getUser_id(), user);
         return UserMapper.toDto(user);

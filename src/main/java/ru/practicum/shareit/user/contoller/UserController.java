@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.AbstractDtoException;
 import ru.practicum.shareit.exception.ErrorResponse;
+import ru.practicum.shareit.user.exception.UserConflictException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.exception.UserValidationException;
 import ru.practicum.shareit.user.service.UserService;
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping()
-    public UserDto addNewUser(@Valid @RequestBody UserDto userDto){
+    public UserDto addNewUser(@RequestBody(required = false) UserDto userDto){
         return userService.addNewUser(userDto);
     }
 
@@ -45,6 +46,12 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id){
         userService.deleteUserById(id);
+    }
+
+    @ExceptionHandler(UserConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(UserConflictException ex) {
+        ErrorResponse errorResponse = ex.toResponse();
+        return new ResponseEntity<>(errorResponse, errorResponse.httpStatusCode());
     }
 
     @ExceptionHandler(UserValidationException.class)
