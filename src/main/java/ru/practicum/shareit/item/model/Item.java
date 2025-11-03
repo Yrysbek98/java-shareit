@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Item {
-    private Long itemId;
-    private String itemName;
-    private String itemDescription;
-    private Long ownerId;
+    private Long id;
+    private String name;
+    private String description;
+    private Boolean available;
 }

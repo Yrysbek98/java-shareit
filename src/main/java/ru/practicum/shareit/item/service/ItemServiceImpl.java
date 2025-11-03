@@ -3,16 +3,21 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService{
-    private HashMap<Long, Item> items = new HashMap<>();
-    private Long nextId = 1L;
+    private ConcurrentHashMap<Long, Item> items = new ConcurrentHashMap<>();
+
+    private final AtomicLong idGenerator = new AtomicLong(0);
     @Override
     public ItemDto getItemById(Long id) {
         return ItemMapper.toDto(items.get(id));
@@ -27,15 +32,20 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public ItemDto addNewItem(ItemDto itemDto) {
+        if (itemDto == null){
+            throw  new ItemValidationException("Данные товара не могут быть пустыми");
+        }
         Item item = ItemMapper.toEntity(itemDto);
-        items.put(nextId++, item);
+        long id = idGenerator.getAndIncrement();
+        item.setId(id);
+        items.put(id, item);
         return ItemMapper.toDto(item);
     }
 
     @Override
-    public ItemDto updateItem(ItemDto itemDto) {
-        Item item = ItemMapper.toEntity(itemDto);
-        items.put(item.getItemId(), item);
+    public ItemDto updateItem(Long id, ItemDto itemDto) {
+        Item item = items.get(id);
+        items.put(item.getId(), item);
         return ItemMapper.toDto(item);
     }
 

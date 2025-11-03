@@ -12,14 +12,13 @@ import lombok.Data;
 @AllArgsConstructor
 public class ItemDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long itemId;
+    private Long id;
 
     @NotBlank(message = "Название не должно быть пустым")
-    private String itemName;
+    private String name;
 
     @NotBlank(message = "Описание не должно быть пустым")
-    private String itemDescription;
+    private String description;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long ownerId;
+    private Boolean available;
 }

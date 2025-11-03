@@ -12,7 +12,7 @@ public interface ItemService {
 
     ItemDto addNewItem(ItemDto itemDto);
 
-    ItemDto updateItem(ItemDto itemDto);
+    ItemDto updateItem(Long id, ItemDto itemDto);
 
     void deleteItemById(Long id);
 }

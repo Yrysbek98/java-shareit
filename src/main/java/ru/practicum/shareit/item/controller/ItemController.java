@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +32,15 @@ public class ItemController {
     }
 
     @PostMapping()
-    public ItemDto addNewItem(@RequestBody ItemDto itemDto){
+    public ItemDto addNewItem(@Valid @RequestBody ItemDto itemDto){
         return ItemService.addNewItem(itemDto);
     }
 
-    @PatchMapping
-    public ItemDto updateItem(@RequestBody ItemDto itemDto){
-        return ItemService.updateItem(itemDto);
+    @PatchMapping("/{id}")
+    public ItemDto updateItem(
+            @PathVariable Long id,
+            @RequestBody ItemDto itemDto){
+        return ItemService.updateItem(id, itemDto);
     }
 
     @DeleteMapping("/{id}")
@@ -45,21 +48,11 @@ public class ItemController {
         ItemService.deleteItemById(id);
     }
 
-    @ExceptionHandler(ItemValidationException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(ItemValidationException ex) {
+
+    @ExceptionHandler(AbstractDtoException.class)
+    public ResponseEntity<ErrorResponse> handleDtoExceptions(AbstractDtoException ex) {
         ErrorResponse errorResponse = ex.toResponse();
         return new ResponseEntity<>(errorResponse, errorResponse.httpStatusCode());
     }
 
-    @ExceptionHandler(ItemNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(ItemNotFoundException ex) {
-        ErrorResponse errorResponse = ex.toResponse();
-        return new ResponseEntity<>(errorResponse, errorResponse.httpStatusCode());
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleServerExceptions(AbstractDtoException exception) {
-        ErrorResponse errorResponse = exception.toResponse();
-        return new ResponseEntity<>(errorResponse, errorResponse.httpStatusCode());
-    }
 }
