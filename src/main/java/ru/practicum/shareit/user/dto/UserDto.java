@@ -1,6 +1,6 @@
 package ru.practicum.shareit.user.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long user_id;
+    private Long userId;
     @NotBlank(message = "Имя не может быть пустым")
-    private String user_name;
-    @Email(message = "Некорретный email")
-    @NotBlank(message = "Email - неможет быть пустым")
-    private String user_email;
+    private String userName;
+    @Email(message = "Некорректный email")
+    @NotBlank(message = "Email - не может быть пустым")
+    private String userEmail;
 }

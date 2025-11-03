@@ -15,13 +15,13 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private HashMap<Long, User> users = new HashMap<>();
-    private Long nextId = 1L;
-    private final AtomicLong idGenerator = new AtomicLong(0);
+    private final HashMap<Long, User> users = new HashMap<>();
+    private final AtomicLong idGenerator = new AtomicLong(1);
 
     @Override
     public UserDto getUserById(Long id) {
-        return UserMapper.toDto(users.get(id));
+        User user = users.get(id);
+        return user == null ? null : UserMapper.toDto(user);
     }
 
     @Override
@@ -33,25 +33,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto addNewUser(UserDto userDto) {
-      if(userDto == null){
-            return new UserDto();
+        if (userDto == null) {
+            throw new UserValidationException("Данные пользователя не могут быть пустыми");
         }
-        User user = UserMapper.toEntity(userDto);
-        if (users.values().stream().anyMatch(u -> u.getUser_email().equalsIgnoreCase(user.getUser_email()))) {
+
+        if (userDto.getUserEmail() != null &&
+                users.values().stream().anyMatch(u -> u.getUserEmail() != null &&
+                        u.getUserEmail().equalsIgnoreCase(userDto.getUserName()))) {
             throw new UserConflictException("Такой email уже существует");
         }
-        if (userDto.getUser_email() == null){
-            throw new UserValidationException("Email не может быть пустым");
-        }
-        user.setUser_id(nextId++);
-        users.put(user.getUser_id(), user);
+
+        User user = UserMapper.toEntity(userDto);
+        long id = idGenerator.getAndIncrement();
+        user.setUserId(id);
+        users.put(id, user);
         return UserMapper.toDto(user);
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto) {
-        User user = UserMapper.toEntity(userDto);
-        users.put(user.getUser_id(), user);
+    public UserDto updateUser(Long id, UserDto userDto) {
+        User user = users.get(id);
+        if (user == null) {
+            throw new UserValidationException("Пользователь с id " + id + " не найден");
+        }
+
+        if (userDto.getUserName() != null) {
+            user.setUserName(userDto.getUserName());
+        }
+        if (userDto.getUserEmail() != null) {
+            user.setUserEmail(userDto.getUserEmail());
+        }
+
+        users.put(id, user);
         return UserMapper.toDto(user);
     }
 

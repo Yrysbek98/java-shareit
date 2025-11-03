@@ -34,13 +34,15 @@ public class UserController {
     }
 
     @PostMapping()
-    public UserDto addNewUser(@RequestBody(required = false) UserDto userDto){
+    public UserDto addNewUser(@Valid @RequestBody UserDto userDto){
         return userService.addNewUser(userDto);
     }
 
-    @PatchMapping
-    public UserDto updateUser(@RequestBody UserDto userDto){
-        return userService.updateUser(userDto);
+    @PatchMapping("/{id}")
+    public UserDto updateUser(
+            @PathVariable Long id,
+            @RequestBody UserDto userDto){
+        return userService.updateUser(id, userDto);
     }
 
     @DeleteMapping("/{id}")
@@ -48,27 +50,9 @@ public class UserController {
         userService.deleteUserById(id);
     }
 
-    @ExceptionHandler(UserConflictException.class)
-    public ResponseEntity<ErrorResponse> handleConflict(UserConflictException ex) {
+    @ExceptionHandler(AbstractDtoException.class)
+    public ResponseEntity<ErrorResponse> handleDtoExceptions(AbstractDtoException ex) {
         ErrorResponse errorResponse = ex.toResponse();
-        return new ResponseEntity<>(errorResponse, errorResponse.httpStatusCode());
-    }
-
-    @ExceptionHandler(UserValidationException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(UserValidationException ex) {
-        ErrorResponse errorResponse = ex.toResponse();
-        return new ResponseEntity<>(errorResponse, errorResponse.httpStatusCode());
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(UserNotFoundException ex) {
-        ErrorResponse errorResponse = ex.toResponse();
-        return new ResponseEntity<>(errorResponse, errorResponse.httpStatusCode());
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleServerExceptions(AbstractDtoException exception) {
-        ErrorResponse errorResponse = exception.toResponse();
         return new ResponseEntity<>(errorResponse, errorResponse.httpStatusCode());
     }
 

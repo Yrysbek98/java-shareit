@@ -5,14 +5,18 @@ import ru.practicum.shareit.user.model.User;
 
 public class UserMapper {
     public static User toEntity(UserDto dto) {
+        if (dto == null) return null;
+
         User user = new User();
-        user.setUser_name(dto.getUser_name());
-        user.setUser_email(dto.getUser_email());
+        user.setUserId(dto.getUserId());
+        user.setUserName(dto.getUserName());
+        user.setUserEmail(dto.getUserEmail());
         return user;
     }
 
     public static UserDto toDto(User user) {
-        return new UserDto(user.getUser_id(), user.getUser_name(), user.getUser_email());
+        if (user == null) return null;
+        return new UserDto(user.getUserId(), user.getUserName(), user.getUserEmail());
     }
 
 }

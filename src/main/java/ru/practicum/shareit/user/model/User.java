@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 public class User {
-    private Long user_id;
-    private String user_name;
-    private String user_email;
+    private Long userId;
+    private String userName;
+    private String userEmail;
 }
