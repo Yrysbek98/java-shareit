@@ -8,15 +8,19 @@ public class UserMapper {
         if (dto == null) return null;
 
         User user = new User();
-        user.setUserId(dto.getUserId());
-        user.setUserName(dto.getUserName());
-        user.setUserEmail(dto.getUserEmail());
+        user.setUserId(dto.getId());
+        user.setUserName(dto.getName());
+        user.setUserEmail(dto.getEmail());
         return user;
     }
 
     public static UserDto toDto(User user) {
         if (user == null) return null;
-        return new UserDto(user.getUserId(), user.getUserName(), user.getUserEmail());
+        UserDto dto = new UserDto();
+        dto.setId(user.getUserId());
+        dto.setName(user.getUserName());
+        dto.setEmail(user.getUserEmail());
+        return dto;
     }
 
 }

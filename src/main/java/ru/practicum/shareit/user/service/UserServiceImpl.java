@@ -10,13 +10,14 @@ import ru.practicum.shareit.user.model.User;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final HashMap<Long, User> users = new HashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong(1);
+    private final ConcurrentHashMap<Long, User> users = new ConcurrentHashMap<>();
+    private final AtomicLong idGenerator = new AtomicLong(0);
 
     @Override
     public UserDto getUserById(Long id) {
@@ -37,9 +38,9 @@ public class UserServiceImpl implements UserService {
             throw new UserValidationException("Данные пользователя не могут быть пустыми");
         }
 
-        if (userDto.getUserEmail() != null &&
+        if (userDto.getEmail() != null &&
                 users.values().stream().anyMatch(u -> u.getUserEmail() != null &&
-                        u.getUserEmail().equalsIgnoreCase(userDto.getUserName()))) {
+                        u.getUserEmail().equalsIgnoreCase(userDto.getEmail()))) {
             throw new UserConflictException("Такой email уже существует");
         }
 
@@ -56,13 +57,19 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new UserValidationException("Пользователь с id " + id + " не найден");
         }
+        if (userDto.getEmail() != null &&
+                users.values().stream().anyMatch(u -> u.getUserEmail() != null &&
+                        u.getUserEmail().equalsIgnoreCase(userDto.getEmail()))) {
+            throw new UserConflictException("Такой email уже существует");
+        }
 
-        if (userDto.getUserName() != null) {
-            user.setUserName(userDto.getUserName());
+        if (userDto.getName() != null) {
+            user.setUserName(userDto.getName());
         }
-        if (userDto.getUserEmail() != null) {
-            user.setUserEmail(userDto.getUserEmail());
+        if (userDto.getEmail() != null) {
+            user.setUserEmail(userDto.getEmail());
         }
+
 
         users.put(id, user);
         return UserMapper.toDto(user);

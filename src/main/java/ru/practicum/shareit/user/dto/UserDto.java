@@ -13,10 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long userId;
+    private Long id;
+
     @NotBlank(message = "Имя не может быть пустым")
-    private String userName;
+    private String name;
+
     @Email(message = "Некорректный email")
-    @NotBlank(message = "Email - не может быть пустым")
-    private String userEmail;
+    @NotBlank(message = "Email не может быть пустым")
+    private String email;
 }
