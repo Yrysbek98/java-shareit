@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -54,9 +55,25 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public ItemDto updateItem(Long id, ItemDto itemDto) {
+    public ItemDto updateItem(Long userId, Long id, ItemDto itemDto) {
         Item item = items.get(id);
-        items.put(item.getId(), item);
+        if (item == null){
+            throw new ItemNotFoundException("Такой Item не был найден");
+        }
+        User user = UserMapper.toEntity(userService.getUserById(userId));
+        if (user == null){
+            throw new UserNotFoundException("Пользователь не найден");
+        }
+        if (item.getName() != null){
+            item.setName(itemDto.getName());
+        }
+        if (item.getDescription() != null){
+            item.setDescription(itemDto.getDescription());
+        }
+        if (item.getAvailable() != null){
+            item.setAvailable(itemDto.getAvailable());
+        }
+        items.put(id, item);
         return ItemMapper.toDto(item);
     }
 

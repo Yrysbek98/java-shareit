@@ -40,9 +40,10 @@ public class ItemController {
 
     @PatchMapping("/{id}")
     public ItemDto updateItem(
+            @RequestHeader("X-Sharer-User-Id") Long userId,
             @PathVariable Long id,
             @RequestBody ItemDto itemDto){
-        return ItemService.updateItem(id, itemDto);
+        return ItemService.updateItem(userId, id, itemDto);
     }
 
     @DeleteMapping("/{id}")
