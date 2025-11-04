@@ -54,6 +54,10 @@ public class ItemController {
         ItemService.deleteItemById(id);
     }
 
+    @GetMapping("/search")
+    public List<ItemDto> searchItem(@RequestParam String text){
+        return ItemService.searchItem(text);
+    }
 
     @ExceptionHandler(AbstractDtoException.class)
     public ResponseEntity<ErrorResponse> handleDtoExceptions(AbstractDtoException ex) {

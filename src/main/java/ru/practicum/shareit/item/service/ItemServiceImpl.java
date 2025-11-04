@@ -13,8 +13,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -36,6 +35,9 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public List<ItemDto> getAllItems(Long userId) {
+        if (items == null || items.isEmpty()) {
+            return new ArrayList<>();
+        }
         return items.values().stream()
                 .filter(item -> item.getOwnerId().equals(userId))
                 .map(ItemMapper::toDto)
@@ -87,4 +89,23 @@ public class ItemServiceImpl implements ItemService{
     public void deleteItemById(Long id) {
         items.remove(id);
     }
+
+    @Override
+    public List<ItemDto> searchItem(String text) {
+        if (text == null || text.isBlank()) {
+            return List.of();
+        }
+
+        return items.values().stream()
+                .filter(Objects::nonNull)
+                .filter(item -> Boolean.TRUE.equals(item.getAvailable()))
+                .filter(item ->
+                        (item.getName() != null && item.getName().toLowerCase().contains(text.toLowerCase())) ||
+                                (item.getDescription() != null && item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                )
+                .map(ItemMapper::toDto)
+                .toList();
+    }
+
+
 }
