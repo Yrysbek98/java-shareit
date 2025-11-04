@@ -21,5 +21,5 @@ public class ItemDto {
     @NotNull(message = "Поле available  не должно быть пустым")
     private Boolean available;
 
-    private Long OwnerId;
+    private Long ownerId;
 }

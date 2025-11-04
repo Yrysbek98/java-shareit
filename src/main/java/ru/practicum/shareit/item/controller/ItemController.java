@@ -15,26 +15,26 @@ import java.util.List;
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
-    private final ItemService ItemService;
+    private final ItemService itemService;
 
     @GetMapping("/{id}")
     public ItemDto getItemById(
             @PathVariable Long id) {
-        return ItemService.getItemById(id);
+        return itemService.getItemById(id);
     }
 
     @GetMapping()
     public List<ItemDto> getAllItems(
             @RequestHeader("X-Sharer-User-Id") Long userId
     ) {
-        return ItemService.getAllItems(userId);
+        return itemService.getAllItems(userId);
     }
 
     @PostMapping()
     public ItemDto addNewItem(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @Valid @RequestBody ItemDto itemDto) {
-        return ItemService.addNewItem(userId, itemDto);
+        return itemService.addNewItem(userId, itemDto);
     }
 
     @PatchMapping("/{id}")
@@ -42,17 +42,17 @@ public class ItemController {
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @PathVariable Long id,
             @RequestBody ItemDto itemDto) {
-        return ItemService.updateItem(userId, id, itemDto);
+        return itemService.updateItem(userId, id, itemDto);
     }
 
     @DeleteMapping("/{id}")
     public void deleteItem(@PathVariable Long id) {
-        ItemService.deleteItemById(id);
+        itemService.deleteItemById(id);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItem(@RequestParam String text) {
-        return ItemService.searchItem(text);
+        return itemService.searchItem(text);
     }
 
     @ExceptionHandler(AbstractDtoException.class)
