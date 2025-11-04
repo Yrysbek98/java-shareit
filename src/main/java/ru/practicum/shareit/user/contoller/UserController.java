@@ -6,47 +6,41 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.AbstractDtoException;
 import ru.practicum.shareit.exception.ErrorResponse;
-import ru.practicum.shareit.user.exception.UserConflictException;
-import ru.practicum.shareit.user.exception.UserNotFoundException;
-import ru.practicum.shareit.user.exception.UserValidationException;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/users")
 public class UserController {
-    private  final UserService userService;
+    private final UserService userService;
 
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable Long id){
+    public UserDto getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
     @GetMapping()
-    public List<UserDto> getAllUsers(){
-       return userService.getAllUsers();
+    public List<UserDto> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     @PostMapping()
-    public UserDto addNewUser(@Valid @RequestBody UserDto userDto){
+    public UserDto addNewUser(@Valid @RequestBody UserDto userDto) {
         return userService.addNewUser(userDto);
     }
 
     @PatchMapping("/{id}")
     public UserDto updateUser(
             @PathVariable Long id,
-            @RequestBody UserDto userDto){
+            @RequestBody UserDto userDto) {
         return userService.updateUser(id, userDto);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id){
+    public void deleteUser(@PathVariable Long id) {
         userService.deleteUserById(id);
     }
 

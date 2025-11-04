@@ -11,7 +11,7 @@ import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.user.service.UserServiceImpl;
+
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,11 +19,12 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 @RequiredArgsConstructor
-public class ItemServiceImpl implements ItemService{
-    private ConcurrentHashMap<Long, Item> items = new ConcurrentHashMap<>();
+public class ItemServiceImpl implements ItemService {
+    private final ConcurrentHashMap<Long, Item> items = new ConcurrentHashMap<>();
     private final UserService userService;
 
     private final AtomicLong idGenerator = new AtomicLong(0);
+
     @Override
     public ItemDto getItemById(Long id) {
         Item item = items.get(id);
@@ -46,11 +47,11 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public ItemDto addNewItem(Long userId, ItemDto itemDto) {
-        if (itemDto == null){
-            throw  new ItemValidationException("Данные товара не могут быть пустыми");
+        if (itemDto == null) {
+            throw new ItemValidationException("Данные товара не могут быть пустыми");
         }
         User user = UserMapper.toEntity(userService.getUserById(userId));
-        if (user == null){
+        if (user == null) {
             throw new UserNotFoundException("Пользователь не найден");
         }
 
@@ -65,20 +66,20 @@ public class ItemServiceImpl implements ItemService{
     @Override
     public ItemDto updateItem(Long userId, Long id, ItemDto itemDto) {
         Item item = items.get(id);
-        if (item == null){
+        if (item == null) {
             throw new ItemNotFoundException("Такой Item не был найден");
         }
         User user = UserMapper.toEntity(userService.getUserById(userId));
-        if (user == null){
+        if (user == null) {
             throw new UserNotFoundException("Пользователь не найден");
         }
-        if (item.getName() != null){
+        if (item.getName() != null) {
             item.setName(itemDto.getName());
         }
-        if (item.getDescription() != null){
+        if (item.getDescription() != null) {
             item.setDescription(itemDto.getDescription());
         }
-        if (item.getAvailable() != null){
+        if (item.getAvailable() != null) {
             item.setAvailable(itemDto.getAvailable());
         }
         items.put(id, item);

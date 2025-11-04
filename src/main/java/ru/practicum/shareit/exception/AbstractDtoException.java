@@ -1,7 +1,6 @@
 package ru.practicum.shareit.exception;
 
 import org.springframework.http.HttpStatus;
-import ru.practicum.shareit.exception.ErrorResponse;
 
 public abstract class AbstractDtoException extends RuntimeException {
     private HttpStatus httpStatus;
