@@ -27,12 +27,17 @@ public class ItemServiceImpl implements ItemService{
     private final AtomicLong idGenerator = new AtomicLong(0);
     @Override
     public ItemDto getItemById(Long id) {
-        return ItemMapper.toDto(items.get(id));
+        Item item = items.get(id);
+        if (item == null) {
+            throw new ItemNotFoundException("Предмет не найден");
+        }
+        return ItemMapper.toDto(item);
     }
 
     @Override
-    public List<ItemDto> getAllItems() {
+    public List<ItemDto> getAllItems(Long userId) {
         return items.values().stream()
+                .filter(item -> item.getOwnerId().equals(userId))
                 .map(ItemMapper::toDto)
                 .toList();
     }
@@ -48,6 +53,7 @@ public class ItemServiceImpl implements ItemService{
         }
 
         Item item = ItemMapper.toEntity(itemDto);
+        item.setOwnerId(userId);
         long id = idGenerator.getAndIncrement();
         item.setId(id);
         items.put(id, item);

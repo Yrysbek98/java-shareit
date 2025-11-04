@@ -22,13 +22,16 @@ import java.util.List;
 public class ItemController {
     private final  ItemService ItemService;
     @GetMapping("/{id}")
-    public ItemDto getItemById(@PathVariable Long id){
-        return ItemService.getItemById(id);
+    public ItemDto getItemById(
+            @PathVariable Long id){
+        return ItemService.getItemById( id);
     }
 
     @GetMapping()
-    public List<ItemDto> getAllItems(){
-        return ItemService.getAllItems();
+    public List<ItemDto> getAllItems(
+            @RequestHeader("X-Sharer-User-Id") Long userId
+    ){
+        return ItemService.getAllItems(userId);
     }
 
     @PostMapping()
