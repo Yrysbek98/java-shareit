@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -20,5 +21,6 @@ public class ItemDto {
     @NotBlank(message = "Описание не должно быть пустым")
     private String description;
 
+    @NotNull(message = "Поле available  не должно быть пустым")
     private Boolean available;
 }
