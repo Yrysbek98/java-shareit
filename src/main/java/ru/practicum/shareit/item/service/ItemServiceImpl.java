@@ -2,12 +2,11 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.exceptionType.NotFoundException;
+import ru.practicum.shareit.exception.exceptionType.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.exception.ItemNotFoundException;
-import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
@@ -29,14 +28,14 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto getItemById(Long id) {
         Item item = items.get(id);
         if (item == null) {
-            throw new ItemNotFoundException("Предмет не найден");
+            throw new NotFoundException("Предмет не найден");
         }
         return ItemMapper.toDto(item);
     }
 
     @Override
     public List<ItemDto> getAllItems(Long userId) {
-        if (items == null || items.isEmpty()) {
+        if (items.isEmpty()) {
             return new ArrayList<>();
         }
         return items.values().stream()
@@ -48,11 +47,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto addNewItem(Long userId, ItemDto itemDto) {
         if (itemDto == null) {
-            throw new ItemValidationException("Данные товара не могут быть пустыми");
+            throw new ValidationException("Данные товара не могут быть пустыми");
         }
         User user = UserMapper.toEntity(userService.getUserById(userId));
         if (user == null) {
-            throw new UserNotFoundException("Пользователь не найден");
+            throw new NotFoundException("Пользователь не найден");
         }
 
         Item item = ItemMapper.toEntity(itemDto);
@@ -67,11 +66,11 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto updateItem(Long userId, Long id, ItemDto itemDto) {
         Item item = items.get(id);
         if (item == null) {
-            throw new ItemNotFoundException("Такой Item не был найден");
+            throw new NotFoundException("Такой Item не был найден");
         }
         User user = UserMapper.toEntity(userService.getUserById(userId));
         if (user == null) {
-            throw new UserNotFoundException("Пользователь не найден");
+            throw new NotFoundException("Пользователь не найден");
         }
         if (item.getName() != null) {
             item.setName(itemDto.getName());

@@ -2,10 +2,7 @@ package ru.practicum.shareit.item.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.AbstractDtoException;
-import ru.practicum.shareit.exception.ErrorResponse;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -54,11 +51,4 @@ public class ItemController {
     public List<ItemDto> searchItem(@RequestParam String text) {
         return itemService.searchItem(text);
     }
-
-    @ExceptionHandler(AbstractDtoException.class)
-    public ResponseEntity<ErrorResponse> handleDtoExceptions(AbstractDtoException ex) {
-        ErrorResponse errorResponse = ex.toResponse();
-        return new ResponseEntity<>(errorResponse, errorResponse.httpStatusCode());
-    }
-
 }

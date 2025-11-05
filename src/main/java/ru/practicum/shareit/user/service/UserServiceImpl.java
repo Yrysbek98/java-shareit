@@ -2,9 +2,9 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.exceptionType.ConflictException;
+import ru.practicum.shareit.exception.exceptionType.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.exception.UserConflictException;
-import ru.practicum.shareit.user.exception.UserValidationException;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
@@ -34,13 +34,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto addNewUser(UserDto userDto) {
         if (userDto == null) {
-            throw new UserValidationException("Данные пользователя не могут быть пустыми");
+            throw new ValidationException("Данные пользователя не могут быть пустыми");
         }
 
         if (userDto.getEmail() != null &&
                 users.values().stream().anyMatch(u -> u.getUserEmail() != null &&
                         u.getUserEmail().equalsIgnoreCase(userDto.getEmail()))) {
-            throw new UserConflictException("Такой email уже существует");
+            throw new ConflictException("Такой email уже существует");
         }
 
         User user = UserMapper.toEntity(userDto);
@@ -54,12 +54,12 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(Long id, UserDto userDto) {
         User user = users.get(id);
         if (user == null) {
-            throw new UserValidationException("Пользователь с id " + id + " не найден");
+            throw new ValidationException("Пользователь с id " + id + " не найден");
         }
         if (userDto.getEmail() != null &&
                 users.values().stream().anyMatch(u -> u.getUserEmail() != null &&
                         u.getUserEmail().equalsIgnoreCase(userDto.getEmail()))) {
-            throw new UserConflictException("Такой email уже существует");
+            throw new ConflictException("Такой email уже существует");
         }
 
         if (userDto.getName() != null) {

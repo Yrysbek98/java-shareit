@@ -2,10 +2,7 @@ package ru.practicum.shareit.user.contoller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.AbstractDtoException;
-import ru.practicum.shareit.exception.ErrorResponse;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
 
@@ -43,12 +40,5 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUserById(id);
     }
-
-    @ExceptionHandler(AbstractDtoException.class)
-    public ResponseEntity<ErrorResponse> handleDtoExceptions(AbstractDtoException ex) {
-        ErrorResponse errorResponse = ex.toResponse();
-        return new ResponseEntity<>(errorResponse, errorResponse.httpStatusCode());
-    }
-
 
 }
