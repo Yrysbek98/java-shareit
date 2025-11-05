@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,10 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ItemDto {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long id;
-
+public class ItemRequestDto {
     @NotBlank(message = "Название не должно быть пустым")
     private String name;
 
@@ -20,6 +16,4 @@ public class ItemDto {
 
     @NotNull(message = "Поле available  не должно быть пустым")
     private Boolean available;
-
-    private Long ownerId;
 }

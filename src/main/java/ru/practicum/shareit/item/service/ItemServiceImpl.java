@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.exceptionType.NotFoundException;
 import ru.practicum.shareit.exception.exceptionType.ValidationException;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemRequestDto;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.mapper.UserMapper;
@@ -25,7 +26,7 @@ public class ItemServiceImpl implements ItemService {
     private final AtomicLong idGenerator = new AtomicLong(0);
 
     @Override
-    public ItemDto getItemById(Long id) {
+    public ItemResponseDto getItemById(Long id) {
         Item item = items.get(id);
         if (item == null) {
             throw new NotFoundException("Предмет не найден");
@@ -34,7 +35,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getAllItems(Long userId) {
+    public List<ItemResponseDto> getAllItems(Long userId) {
         if (items.isEmpty()) {
             return new ArrayList<>();
         }
@@ -45,7 +46,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto addNewItem(Long userId, ItemDto itemDto) {
+    public ItemResponseDto addNewItem(Long userId, ItemRequestDto itemDto) {
         if (itemDto == null) {
             throw new ValidationException("Данные товара не могут быть пустыми");
         }
@@ -63,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto updateItem(Long userId, Long id, ItemDto itemDto) {
+    public ItemResponseDto updateItem(Long userId, Long id, ItemRequestDto itemDto) {
         Item item = items.get(id);
         if (item == null) {
             throw new NotFoundException("Такой Item не был найден");
@@ -72,13 +73,13 @@ public class ItemServiceImpl implements ItemService {
         if (user == null) {
             throw new NotFoundException("Пользователь не найден");
         }
-        if (item.getName() != null) {
+        if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
         }
-        if (item.getDescription() != null) {
+        if (itemDto.getDescription() != null) {
             item.setDescription(itemDto.getDescription());
         }
-        if (item.getAvailable() != null) {
+        if (itemDto.getAvailable() != null) {
             item.setAvailable(itemDto.getAvailable());
         }
         items.put(id, item);
@@ -91,7 +92,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItem(String text) {
+    public List<ItemResponseDto> searchItem(String text) {
         if (text == null || text.isBlank()) {
             return List.of();
         }

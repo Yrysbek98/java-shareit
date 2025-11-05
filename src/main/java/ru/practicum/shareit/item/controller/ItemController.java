@@ -3,7 +3,8 @@ package ru.practicum.shareit.item.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemRequestDto;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
@@ -15,30 +16,30 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/{id}")
-    public ItemDto getItemById(
+    public ItemResponseDto getItemById(
             @PathVariable Long id) {
         return itemService.getItemById(id);
     }
 
     @GetMapping()
-    public List<ItemDto> getAllItems(
+    public List<ItemResponseDto> getAllItems(
             @RequestHeader("X-Sharer-User-Id") Long userId
     ) {
         return itemService.getAllItems(userId);
     }
 
     @PostMapping()
-    public ItemDto addNewItem(
+    public ItemResponseDto addNewItem(
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @Valid @RequestBody ItemDto itemDto) {
+            @Valid @RequestBody ItemRequestDto itemDto) {
         return itemService.addNewItem(userId, itemDto);
     }
 
     @PatchMapping("/{id}")
-    public ItemDto updateItem(
+    public ItemResponseDto updateItem(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @PathVariable Long id,
-            @RequestBody ItemDto itemDto) {
+            @RequestBody ItemRequestDto itemDto) {
         return itemService.updateItem(userId, id, itemDto);
     }
 
@@ -48,7 +49,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItem(@RequestParam String text) {
+    public List<ItemResponseDto> searchItem(@RequestParam String text) {
         return itemService.searchItem(text);
     }
 }
