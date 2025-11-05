@@ -8,8 +8,7 @@ import ru.practicum.shareit.item.dto.ItemRequestDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.mapper.UserMapper;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.dto.UserResponseDto;
 import ru.practicum.shareit.user.service.UserService;
 
 
@@ -50,7 +49,7 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto == null) {
             throw new ValidationException("Данные товара не могут быть пустыми");
         }
-        User user = UserMapper.toEntity(userService.getUserById(userId));
+        UserResponseDto user = userService.getUserById(userId);
         if (user == null) {
             throw new NotFoundException("Пользователь не найден");
         }
@@ -69,7 +68,7 @@ public class ItemServiceImpl implements ItemService {
         if (item == null) {
             throw new NotFoundException("Такой Item не был найден");
         }
-        User user = UserMapper.toEntity(userService.getUserById(userId));
+        UserResponseDto user = userService.getUserById(userId);
         if (user == null) {
             throw new NotFoundException("Пользователь не найден");
         }

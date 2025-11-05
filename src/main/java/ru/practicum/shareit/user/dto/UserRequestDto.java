@@ -11,13 +11,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long id;
-
+public class UserRequestDto {
+    @JsonProperty("name")
     @NotBlank(message = "Имя не может быть пустым")
     private String name;
 
+    @JsonProperty("email")
     @Email(message = "Некорректный email")
     @NotBlank(message = "Email не может быть пустым")
     private String email;

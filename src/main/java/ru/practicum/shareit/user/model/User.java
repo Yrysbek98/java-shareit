@@ -10,4 +10,9 @@ public class User {
     private Long userId;
     private String userName;
     private String userEmail;
+
+    public User(String userName, String userEmail) {
+        this.userName = userName;
+        this.userEmail = userEmail;
+    }
 }
