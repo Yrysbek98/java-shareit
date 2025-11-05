@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<Map<String, Object>> handleAppExceptions(AppException ex){
+    public ResponseEntity<Map<String, Object>> handleAppExceptions(AppException ex) {
         HttpStatus status;
 
         if (ex instanceof NotFoundException) {
