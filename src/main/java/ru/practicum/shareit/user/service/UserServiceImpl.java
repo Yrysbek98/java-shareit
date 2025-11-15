@@ -22,7 +22,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getUserById(Long id) {
         User user = users.get(id);
-        // return user == null ? null : UserMapper.toDto(user);
         return UserMapper.toDto(user);
     }
 
