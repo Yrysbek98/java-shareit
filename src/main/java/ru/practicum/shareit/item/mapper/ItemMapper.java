@@ -10,13 +10,20 @@ public class ItemMapper {
         if (dto == null) {
             return null;
         }
-        return new Item(dto.getName(), dto.getDescription(), dto.getAvailable());
+
+        Item item = new Item();
+        item.setName(dto.getName());
+        item.setDescription(dto.getDescription());
+        item.setAvailable(dto.getAvailable());
+
+        return item;
     }
 
     public static ItemResponseDto toDto(Item item) {
         if (item == null) {
             return null;
         }
+
         return new ItemResponseDto(
                 item.getId(),
                 item.getName(),
