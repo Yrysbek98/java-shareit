@@ -62,33 +62,28 @@ public class ItemServiceImpl implements ItemService {
             return List.of();
         }
 
-        List<Long> itemIds = items.stream().map(Item::getId).collect(Collectors.toList());
+        List<Long> itemIds = items.stream()
+                .map(Item::getId)
+                .toList();
 
-        Map<Long, List<CommentResponseDto>> commentsMap = commentRepository
-                .findByItemIdInOrderByCreatedDesc(itemIds)
-                .stream()
-                .map(CommentMapper::toDto)
-                .collect(Collectors.groupingBy(comment ->
-                        items.stream()
-                                .filter(item -> commentRepository.findByItemIdOrderByCreatedDesc(item.getId())
-                                        .stream()
-                                        .anyMatch(c -> c.getId().equals(comment.getId())))
-                                .findFirst()
-                                .map(Item::getId)
-                                .orElse(null)));
+
+        Map<Long, List<CommentResponseDto>> commentsMap =
+                commentRepository.findByItemIdInOrderByCreatedDesc(itemIds)
+                        .stream()
+                        .map(CommentMapper::toDto)
+                        .collect(Collectors.groupingBy(CommentResponseDto::getId));
 
         return items.stream()
                 .map(item -> {
-                    BookingShortDto lastBooking = getLastBooking(item.getId());
-                    BookingShortDto nextBooking = getNextBooking(item.getId());
-                    List<CommentResponseDto> comments = commentRepository
-                            .findByItemIdOrderByCreatedDesc(item.getId())
-                            .stream()
-                            .map(CommentMapper::toDto)
-                            .collect(Collectors.toList());
-                    return ItemMapper.toDto(item, lastBooking, nextBooking, comments);
+                    BookingShortDto last = getLastBooking(item.getId());
+                    BookingShortDto next = getNextBooking(item.getId());
+
+                    List<CommentResponseDto> comments =
+                            commentsMap.getOrDefault(item.getId(), List.of());
+
+                    return ItemMapper.toDto(item, last, next, comments);
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

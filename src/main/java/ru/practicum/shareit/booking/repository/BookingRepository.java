@@ -39,7 +39,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             Long bookerId,
             Long itemId,
             BookingStatus status,
-            LocalDateTime now
+            LocalDateTime time
     );
 }
 
