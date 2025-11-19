@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto addNewUser(UserRequestDto userDto) {
-        if (userRepository.existsByUserEmail(userDto.getEmail())) {
+        if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new ConflictException("Email уже используется");
         }
         User user = UserMapper.toEntity(userDto);
@@ -50,15 +50,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + id + " не найден"));
 
-        if (userDto.getEmail() != null && !userDto.getEmail().equals(user.getUserEmail())) {
-            if (userRepository.existsByUserEmail(userDto.getEmail())) {
+        if (userDto.getEmail() != null && !userDto.getEmail().equals(user.getEmail())) {
+            if (userRepository.existsByEmail(userDto.getEmail())) {
                 throw new ConflictException("Email уже используется");
             }
-            user.setUserEmail(userDto.getEmail());
+            user.setEmail(userDto.getEmail());
         }
 
         if (userDto.getName() != null) {
-            user.setUserName(userDto.getName());
+            user.setName(userDto.getName());
         }
 
         User updated = userRepository.save(user);

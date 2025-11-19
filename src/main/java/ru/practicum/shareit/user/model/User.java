@@ -17,16 +17,16 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long userId;
+    private Long id;
 
     @Column(name = "name", nullable = false)
-    private String userName;
+    private String name;
 
     @Column(name = "email", nullable = false, unique = true)
-    private String userEmail;
+    private String email;
 
-    public User(String userName, String userEmail) {
-        this.userName = userName;
-        this.userEmail = userEmail;
+    public User(String name, String email) {
+        this.name = name;
+        this.email = email;
     }
 }

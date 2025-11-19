@@ -12,7 +12,7 @@ public class UserMapper {
 
     public static UserResponseDto toDto(User user) {
         if (user == null) return null;
-        return new UserResponseDto(user.getUserId(), user.getUserName(), user.getUserEmail());
+        return new UserResponseDto(user.getId(), user.getName(), user.getEmail());
     }
 
 }
