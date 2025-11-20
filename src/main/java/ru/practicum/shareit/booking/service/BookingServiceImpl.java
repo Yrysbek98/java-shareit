@@ -98,11 +98,11 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponseDto getBookingById(Long userId, Long id) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Бронирование с id = " + id + " не найдено"));
-        if (!booking.getBooker().getId().equals(userId)) {
-            throw new NotFoundException("Пользователь не является автором бронирования");
-        }
-        if (!booking.getItem().getOwnerId().equals(userId)) {
-            throw new NotFoundException("Пользователь не является владельцем вещи");
+        boolean isBooker = booking.getBooker().getId().equals(userId);
+        boolean isOwner = booking.getItem().getOwnerId().equals(userId);
+
+        if (!isBooker && !isOwner) {
+            throw new NotFoundException("Бронирование с id = " + id + " не найдено");
         }
         return BookingMapper.toDto(booking);
     }
