@@ -71,7 +71,7 @@ public class ItemServiceImpl implements ItemService {
                 commentRepository.findByItemIdInOrderByCreatedDesc(itemIds)
                         .stream()
                         .map(CommentMapper::toDto)
-                        .collect(Collectors.groupingBy(CommentResponseDto::getId));
+                        .collect(Collectors.groupingBy(CommentResponseDto::getItemId));
 
         return items.stream()
                 .map(item -> {

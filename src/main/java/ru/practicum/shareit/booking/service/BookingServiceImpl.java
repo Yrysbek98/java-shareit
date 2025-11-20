@@ -53,17 +53,13 @@ public class BookingServiceImpl implements BookingService {
         }
 
         User booker = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
         Item item = itemRepository.findById(bookingDto.getItemId())
-                .orElseThrow(() -> new NotFoundException("Item not found"));
+                .orElseThrow(() -> new NotFoundException("Вещь не найден"));
 
         if (!item.getAvailable()) {
-            throw new ValidationException("Item is not available for booking");
-        }
-
-        if (bookingDto.getEnd().isBefore(bookingDto.getStart()) || bookingDto.getEnd().isEqual(bookingDto.getStart())) {
-            throw new ValidationException("End date must be after start date");
+            throw new ValidationException("Вещь недоступна");
         }
 
         Booking booking = BookingMapper.toEntity(bookingDto, item, booker);
@@ -99,9 +95,15 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponseDto getBookingById(Long id) {
+    public BookingResponseDto getBookingById(Long userId, Long id) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Бронирование с id = " + id + " не найдено"));
+        if (!booking.getBooker().getId().equals(userId)) {
+            throw new NotFoundException("Пользователь не является автором бронирования");
+        }
+        if (!booking.getItem().getOwnerId().equals(userId)) {
+            throw new NotFoundException("Пользователь не является владельцем вещи");
+        }
         return BookingMapper.toDto(booking);
     }
 
