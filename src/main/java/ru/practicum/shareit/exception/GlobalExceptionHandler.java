@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
 
         ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
+            errors.put("error",  error.getDefaultMessage());
         });
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
 
         Map<String, Object> body = Map.of(
                 "status", status.value(),
-                "message", ex.getMessage()
+                "error", ex.getMessage()
         );
 
         return new ResponseEntity<>(body, status);
