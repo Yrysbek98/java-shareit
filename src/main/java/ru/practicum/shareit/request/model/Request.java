@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.item.model.Item;
+
 
 import java.time.LocalDateTime;
 
@@ -24,8 +24,7 @@ public class Request {
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
 
-    @ManyToOne
-    @JoinColumn(name = "item_id")
-    private Item item;
+    @Column(name = "requester_id", nullable = false)
+    private Long requesterId;
 
 }

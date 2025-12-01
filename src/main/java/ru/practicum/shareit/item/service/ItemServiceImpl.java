@@ -16,6 +16,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 
+import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -32,6 +33,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final RequestRepository requestRepository;
 
 
     @Override
@@ -91,7 +93,11 @@ public class ItemServiceImpl implements ItemService {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
-
+        if (itemDto.getRequestId() != null) {
+            if (!requestRepository.existsById(itemDto.getRequestId())) {
+                throw new NotFoundException("Запрос с id = " + itemDto.getRequestId() + " не найден");
+            }
+        }
         Item item = ItemMapper.toEntity(itemDto);
 
         item.setOwnerId(userId);
