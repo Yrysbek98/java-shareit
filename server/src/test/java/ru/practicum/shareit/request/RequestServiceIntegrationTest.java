@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.dto.ResponseDto;
 import ru.practicum.shareit.request.service.RequestService;
@@ -23,9 +22,8 @@ import static org.hamcrest.Matchers.*;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class RequestServiceIntegrationTest {
 
-    private final RequestService RequestService;
+    private final RequestService requestService;
     private final UserService userService;
-    private final ItemService itemService;
 
     @Test
     void createRequest_shouldCreateAndReturnRequest() {
@@ -39,7 +37,7 @@ class RequestServiceIntegrationTest {
                 .build();
 
 
-        ResponseDto createdRequest = RequestService.addNewRequest(
+        ResponseDto createdRequest = requestService.addNewRequest(
                 createdUser.getId(), requestDto);
 
 
@@ -62,10 +60,10 @@ class RequestServiceIntegrationTest {
                 .description("Нужна отвертка")
                 .build();
 
-        RequestService.addNewRequest(createdUser.getId(), request1);
-        RequestService.addNewRequest(createdUser.getId(), request2);
+        requestService.addNewRequest(createdUser.getId(), request1);
+        requestService.addNewRequest(createdUser.getId(), request2);
 
-        List<ResponseDto> requests = RequestService.getUserRequests(createdUser.getId());
+        List<ResponseDto> requests = requestService.getUserRequests(createdUser.getId());
 
         assertThat(requests, hasSize(2));
         assertThat(requests.get(0).getDescription(), either(is("Нужна дрель")).or(is("Нужна отвертка")));
@@ -79,7 +77,7 @@ class RequestServiceIntegrationTest {
 
         UserResponseDto createdUser = userService.addNewUser(requester);
 
-        List<ResponseDto> requests = RequestService.getUserRequests(createdUser.getId());
+        List<ResponseDto> requests = requestService.getUserRequests(createdUser.getId());
 
         assertThat(requests, empty());
     }
