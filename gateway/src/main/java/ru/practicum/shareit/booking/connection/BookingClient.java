@@ -52,24 +52,24 @@ public class BookingClient {
         );
     }
 
-    public ResponseEntity<Object> getBookingsByUser(Long userId, BookingState state) {
+    public ResponseEntity<Object> getBookingsByUser(Long userId, BookingState state, Integer from, Integer size) {
         HttpHeaders headers = createHeaders(userId);
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(
-                serverUrl + "/bookings?state=" + state,
+                serverUrl + "/bookings?state=" + state + "&from=" + from + "&size=" + size,
                 HttpMethod.GET,
                 requestEntity,
                 Object.class
         );
     }
 
-    public ResponseEntity<Object> getBookingsByOwner(Long userId, BookingState state) {
+    public ResponseEntity<Object> getBookingsByOwner(Long userId, BookingState state, Integer from, Integer size) {
         HttpHeaders headers = createHeaders(userId);
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(
-                serverUrl + "/bookings/owner?state=" + state,
+                serverUrl + "/bookings/owner?state=" + state + "&from=" + from + "&size=" + size,
                 HttpMethod.GET,
                 requestEntity,
                 Object.class

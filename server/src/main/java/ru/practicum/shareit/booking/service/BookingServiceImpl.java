@@ -1,6 +1,10 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
@@ -95,102 +99,82 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDto> getBookingsByUser(Long userId, BookingState state) {
+    public List<BookingResponseDto> getBookingsByUser(Long userId, BookingState state, Integer from, Integer size) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
 
-        List<Booking> bookings;
+        int page = from / size;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("start").descending());
         LocalDateTime now = LocalDateTime.now();
+
+        Page<Booking> pageResult;
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.findByBooker_IdOrderByStartDesc(userId);
+                pageResult = bookingRepository.findByBooker_IdOrderByStartDesc(userId, pageable);
                 break;
-
             case CURRENT:
-                bookings = bookingRepository.findByBooker_IdOrderByStartDesc(userId).stream()
-                        .filter(b -> b.getStart().isBefore(now) && b.getEnd().isAfter(now))
-                        .collect(Collectors.toList());
+                pageResult = bookingRepository.findByBooker_IdAndStartBeforeAndEndAfterOrderByStartDesc(userId, now, now, pageable);
                 break;
-
             case PAST:
-                bookings = bookingRepository.findByBooker_IdOrderByStartDesc(userId).stream()
-                        .filter(b -> b.getEnd().isBefore(now))
-                        .collect(Collectors.toList());
+                pageResult = bookingRepository.findByBooker_IdAndEndBeforeOrderByStartDesc(userId, now, pageable);
                 break;
-
             case FUTURE:
-                bookings = bookingRepository.findByBooker_IdOrderByStartDesc(userId).stream()
-                        .filter(b -> b.getStart().isAfter(now))
-                        .collect(Collectors.toList());
+                pageResult = bookingRepository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, now, pageable);
                 break;
-
             case WAITING:
-                bookings = bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
+                pageResult = bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING, pageable);
                 break;
-
             case REJECTED:
-                bookings = bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
+                pageResult = bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED, pageable);
                 break;
-
             default:
                 throw new ValidationException("Неизвестный статус: " + state);
         }
 
-        return bookings.stream()
+        return pageResult.stream()
                 .map(BookingMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<BookingResponseDto> getBookingsByOwner(Long ownerId, BookingState state) {
+    public List<BookingResponseDto> getBookingsByOwner(Long ownerId, BookingState state, Integer from, Integer size) {
         if (!userRepository.existsById(ownerId)) {
             throw new NotFoundException("Пользователь с id = " + ownerId + " не найден");
         }
 
-        List<Booking> bookings;
+        int page = from / size;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("start").descending());
         LocalDateTime now = LocalDateTime.now();
+
+        Page<Booking> pageResult;
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.findByItem_OwnerIdOrderByStartDesc(ownerId);
+                pageResult = bookingRepository.findByItem_OwnerIdOrderByStartDesc(ownerId, pageable);
                 break;
-
             case CURRENT:
-                bookings = bookingRepository.findByItem_OwnerIdOrderByStartDesc(ownerId).stream()
-                        .filter(b -> b.getStart().isBefore(now) && b.getEnd().isAfter(now))
-                        .collect(Collectors.toList());
+                pageResult = bookingRepository.findByItem_OwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(ownerId, now, now, pageable);
                 break;
-
             case PAST:
-                bookings = bookingRepository.findByItem_OwnerIdOrderByStartDesc(ownerId).stream()
-                        .filter(b -> b.getEnd().isBefore(now))
-                        .collect(Collectors.toList());
+                pageResult = bookingRepository.findByItem_OwnerIdAndEndBeforeOrderByStartDesc(ownerId, now, pageable);
                 break;
-
             case FUTURE:
-                bookings = bookingRepository.findByItem_OwnerIdOrderByStartDesc(ownerId).stream()
-                        .filter(b -> b.getStart().isAfter(now))
-                        .collect(Collectors.toList());
+                pageResult = bookingRepository.findByItem_OwnerIdAndStartAfterOrderByStartDesc(ownerId, now, pageable);
                 break;
-
             case WAITING:
-                bookings = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.WAITING);
+                pageResult = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.WAITING, pageable);
                 break;
-
             case REJECTED:
-                bookings = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.REJECTED);
+                pageResult = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.REJECTED, pageable);
                 break;
-
             default:
                 throw new ValidationException("Неизвестный статус: " + state);
         }
 
-        return bookings.stream()
+        return pageResult.stream()
                 .map(BookingMapper::toDto)
                 .collect(Collectors.toList());
-
-
     }
 }

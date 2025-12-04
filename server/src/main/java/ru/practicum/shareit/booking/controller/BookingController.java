@@ -1,5 +1,7 @@
 package ru.practicum.shareit.booking.controller;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
@@ -42,14 +44,19 @@ public class BookingController {
     @GetMapping
     public List<BookingResponseDto> getBookingsByUser(
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @RequestParam(defaultValue = "ALL") BookingState state) {
-        return bookingService.getBookingsByUser(userId, state);
+            @RequestParam(defaultValue = "ALL") BookingState state,
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer size) {
+
+        return bookingService.getBookingsByUser(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingResponseDto> getBookingsByOwner(
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @RequestParam(defaultValue = "ALL") BookingState state) {
-        return bookingService.getBookingsByOwner(userId, state);
+            @RequestParam(defaultValue = "ALL") BookingState state,
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer size) {
+        return bookingService.getBookingsByOwner(userId, state,  from, size);
     }
 }
