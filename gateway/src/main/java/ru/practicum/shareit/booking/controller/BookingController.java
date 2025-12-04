@@ -53,24 +53,15 @@ public class BookingController {
     public ResponseEntity<Object> getBookingsByUser(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "ALL") BookingState state) {
-        BookingState bookingState = parseState(String.valueOf(state));
-        return bookingClient.getBookingsByUser(userId, bookingState);
+        return bookingClient.getBookingsByUser(userId, state);
     }
 
     @GetMapping("/owner")
     public ResponseEntity<Object> getBookingsByOwner(
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @RequestParam(defaultValue = "ALL") String state) {
-
-        BookingState bookingState = parseState(state);
-        return bookingClient.getBookingsByOwner(userId, bookingState);
+            @RequestParam(defaultValue = "ALL") BookingState state) {
+        return bookingClient.getBookingsByOwner(userId, state);
     }
 
-    private BookingState parseState(String stateString) {
-        try {
-            return BookingState.valueOf(stateString.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new ValidationException("Unknown state: " + stateString);
-        }
-    }
+
 }

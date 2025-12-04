@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.practicum.shareit.exception.exceptionType.ConflictException;
 import ru.practicum.shareit.exception.exceptionType.NotFoundException;
 
@@ -52,6 +53,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<String> handleHttpClientError(HttpClientErrorException ex) {
         return ResponseEntity.status(ex.getStatusCode()).body(ex.getResponseBodyAsString());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, Object>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String message = String.format("Неправильный статус ", ex.getValue());
+
+        Map<String, Object> body = Map.of(
+                "status", HttpStatus.BAD_REQUEST.value(),
+                "error", message
+        );
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
 }
