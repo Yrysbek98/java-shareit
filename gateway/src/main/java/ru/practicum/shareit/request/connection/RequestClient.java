@@ -65,7 +65,9 @@ public class RequestClient {
     private HttpHeaders createHeaders(Long userId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("X-Sharer-User-Id", String.valueOf(userId));
+        if (userId != null) {
+            headers.set("X-Sharer-User-Id", String.valueOf(userId));
+        }
         return headers;
     }
 }

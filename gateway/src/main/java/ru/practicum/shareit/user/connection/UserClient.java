@@ -15,30 +15,27 @@ public class UserClient {
     private String serverUrl;
 
     public ResponseEntity<Object> getUserById(Long userId) {
-        HttpHeaders headers = createHeaders(null);
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-
         return restTemplate.exchange(
                 serverUrl + "/users/" + userId,
                 HttpMethod.GET,
-                requestEntity,
+                null,  // без headers и body
                 Object.class
         );
     }
 
     public ResponseEntity<Object> getAllUsers() {
-        HttpHeaders headers = createHeaders(null);
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
         return restTemplate.exchange(
                 serverUrl + "/users",
                 HttpMethod.GET,
-                requestEntity,
+                null,
                 Object.class
+
         );
     }
 
     public ResponseEntity<Object> addNewUser(UserRequestDto userDto) {
-        HttpHeaders headers = createHeaders(null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<UserRequestDto> requestEntity = new HttpEntity<>(userDto, headers);
 
         return restTemplate.exchange(
@@ -50,8 +47,10 @@ public class UserClient {
     }
 
     public ResponseEntity<Object> updateUser(Long userId, UserRequestDto userDto) {
-        HttpHeaders headers = createHeaders(null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<UserRequestDto> requestEntity = new HttpEntity<>(userDto, headers);
+
         return restTemplate.exchange(
                 serverUrl + "/users/" + userId,
                 HttpMethod.PATCH,
@@ -61,20 +60,11 @@ public class UserClient {
     }
 
     public ResponseEntity<Object> deleteUser(Long userId) {
-        HttpHeaders headers = createHeaders(null);
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
         return restTemplate.exchange(
                 serverUrl + "/users/" + userId,
                 HttpMethod.DELETE,
-                requestEntity,
+                null,
                 Object.class
         );
-    }
-
-    private HttpHeaders createHeaders(Long userId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("X-Sharer-User-Id", String.valueOf(userId));
-        return headers;
     }
 }
