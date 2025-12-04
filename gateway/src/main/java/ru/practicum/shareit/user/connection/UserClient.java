@@ -63,7 +63,6 @@ public class UserClient {
     public ResponseEntity<Object> deleteUser(Long userId) {
         HttpHeaders headers = createHeaders(null);
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-        HttpEntity<Void> requestEntity2;
         return restTemplate.exchange(
                 serverUrl + "/users/" + userId,
                 HttpMethod.DELETE,

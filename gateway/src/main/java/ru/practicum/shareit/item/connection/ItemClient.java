@@ -56,7 +56,7 @@ public class ItemClient {
         HttpEntity<ItemRequestDto> requestEntity = new HttpEntity<>(itemDto, headers);
         return restTemplate.exchange(
                 serverUrl + "/items/" + itemId,
-                HttpMethod.POST,
+                HttpMethod.PATCH,
                 requestEntity,
                 Object.class
         );
