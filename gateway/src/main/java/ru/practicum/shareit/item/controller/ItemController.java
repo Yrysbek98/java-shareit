@@ -53,8 +53,13 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> searchItem(@RequestParam String text) {
-        return itemClient.searchItem(text);
+    public ResponseEntity<Object> searchItem(
+            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestParam String text,
+            @RequestParam(defaultValue = "0") Integer from,
+            @RequestParam(defaultValue = "10") Integer size) {
+
+        return itemClient.searchItem(userId, text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")

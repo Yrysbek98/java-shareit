@@ -85,7 +85,7 @@ class ItemServiceIntegrationTest {
         itemService.addNewItem(owner.getId(), itemDto2);
 
 
-        List<ItemResponseDto> foundItems = itemService.searchItem("дрель");
+        List<ItemResponseDto> foundItems = itemService.searchItem("дрель", 1, 10);
 
 
         assertThat(foundItems, hasSize(1));

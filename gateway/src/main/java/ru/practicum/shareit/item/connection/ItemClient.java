@@ -9,6 +9,8 @@ import org.springframework.web.client.RestTemplate;
 import ru.practicum.shareit.item.dto.CommentRequestDto;
 import ru.practicum.shareit.item.dto.ItemRequestDto;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class ItemClient {
@@ -73,13 +75,22 @@ public class ItemClient {
         );
     }
 
-    public ResponseEntity<Object> searchItem(String text) {
-        HttpEntity<String> requestEntity = new HttpEntity<>(text);
+    public ResponseEntity<Object> searchItem(Long userId, String text, Integer from, Integer size) {
+        HttpHeaders headers = createHeaders(userId);
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+        Map<String, Object> parameters = Map.of(
+                "text", text,
+                "from", from,
+                "size", size
+        );
+
         return restTemplate.exchange(
-                serverUrl + "/items/search",
+                serverUrl + "/items/search?text={text}&from={from}&size={size}",
                 HttpMethod.GET,
                 requestEntity,
-                Object.class
+                Object.class,
+                parameters
         );
     }
 
@@ -98,7 +109,9 @@ public class ItemClient {
     private HttpHeaders createHeaders(Long userId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("X-Sharer-User-Id", String.valueOf(userId));
+        if (userId != null) {
+            headers.set("X-Sharer-User-Id", String.valueOf(userId));
+        }
         return headers;
     }
 }

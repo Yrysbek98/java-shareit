@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.enums.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
@@ -141,16 +144,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemResponseDto> searchItem(String text) {
+    public List<ItemResponseDto> searchItem(String text, Integer from, Integer size) {
         if (text == null || text.isBlank()) {
             return List.of();
         }
 
-        List<Item> items = itemRepository
-                .findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(text, text);
+        Pageable pageable = PageRequest.of(from / size, size);
+        Page<Item> items = itemRepository.searchByText(text, pageable);
 
-        return items.stream()
-                .filter(Item::getAvailable)
+        return items.getContent().stream()
                 .map(ItemMapper::toDto)
                 .toList();
     }
